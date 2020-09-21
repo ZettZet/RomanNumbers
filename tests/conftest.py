@@ -1,6 +1,3 @@
-from random import choice
-from typing import List, Tuple
-
 from rstr import xeger
 
 from romannumbers import _regex
