@@ -6,7 +6,8 @@ from typing import Dict, List
 _integers = (1000, 500, 100, 50, 10, 5, 1)
 _literals = ('m', 'd', 'c', 'l', 'x', 'v', 'i')
 
-_regex = r'^m{0,4}(cm|cd|d?c{0,3})(xc|xl|l?x{0,3})(ix|iv|v?i{0,3})$'
+_regex: str = r'^(m{0,4})(d?c{0,3}|c[dm])(l?x{0,3}|x[lc])(v?i{0,3}|i[vx])$'
+
 
 _from_roman_numbers: Dict[str, int] = {
     char: num for char, num in zip(_literals, _integers)}
@@ -26,6 +27,9 @@ def arabic_to_roman(number: int) -> str:
     Returns:
         str: Converted number in lower case
     """
+    if number in _to_roman_numbers:
+        return _to_roman_numbers[number]
+
     if not (0 < number < 5000):
         raise ValueError('Number must be greater then 0 and less then 5000')
 
@@ -123,7 +127,7 @@ def roman_to_arabic(string: str) -> int:
 __all__ = [arabic_to_roman, roman_to_arabic, _regex]
 
 
-def main(roman: str) -> str:
+def to_test(roman: str) -> str:
     converted_roman: int = roman_to_arabic(roman)
     converted_arabic: str = arabic_to_roman(converted_roman)
 
@@ -131,9 +135,12 @@ def main(roman: str) -> str:
 
 
 if __name__ == '__main__':
-    roman: str = input('Roman number: ')
-    converted_roman: int = roman_to_arabic(roman)
-    print(converted_roman)
-    converted_arabic: str = arabic_to_roman(converted_roman)
-    print(converted_arabic)
-    print(converted_arabic == roman)
+    input_str: str = input('Roman or arabic number: ')
+
+    try:
+        out = roman_to_arabic(input_str) if compile(_regex).search(
+            input_str) else arabic_to_roman(int(input_str))
+    except ValueError as ve:
+        print(ve)
+    else:
+        print(out)
