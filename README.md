@@ -14,7 +14,7 @@ Star contains both function and regular expression string pattern, which match v
 __all__ = [arabic_to_roman, roman_to_arabic, _regex]
 ```
 
-## Or you can import only needed functions.
+## Or you can import only needed functions
 
 ## Or you can copy \_\_init\_\_.py and call it as main
 
