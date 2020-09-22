@@ -129,4 +129,4 @@ def roman_to_arabic(string: str) -> int:
     return result
 
 
-__all__ = [arabic_to_roman, roman_to_arabic, is_roman]
+__all__ = ["arabic_to_roman", "roman_to_arabic", "is_roman"]
