@@ -130,11 +130,3 @@ def roman_to_arabic(string: str) -> int:
 
 
 __all__ = [arabic_to_roman, roman_to_arabic, is_roman]
-
-
-def to_test(roman: str) -> str:
-    converted_roman: int = roman_to_arabic(roman)
-    converted_arabic: str = arabic_to_roman(converted_roman)
-
-    return converted_arabic
-
