@@ -6,7 +6,8 @@ from typing import Dict, List
 _INTEGERS = (1000, 500, 100, 50, 10, 5, 1)
 _LITERALS = 'mdclxvi'
 
-_IS_ROMAN_REGEX = compile(r'^(m{0,4})(d?c{0,3}|c[dm])(l?x{0,3}|x[lc])(v?i{0,3}|i[vx])$', IGNORECASE)
+_IS_ROMAN_REGEX = compile(
+    r'^(m{0,4})(d?c{0,3}|c[dm])(l?x{0,3}|x[lc])(v?i{0,3}|i[vx])$', IGNORECASE)
 
 
 _FROM_ROMAN_NUMBERS: Dict[str, int] = {
