@@ -3,16 +3,22 @@ __version__ = '0.1.0'
 from re import IGNORECASE, compile
 from typing import Dict, List
 
-_integers = (1000, 500, 100, 50, 10, 5, 1)
-_literals = ('m', 'd', 'c', 'l', 'x', 'v', 'i')
+_INTEGERS = (1000, 500, 100, 50, 10, 5, 1)
+_LITERALS = 'mdclxvi'
 
-_regex: str = r'^(m{0,4})(d?c{0,3}|c[dm])(l?x{0,3}|x[lc])(v?i{0,3}|i[vx])$'
+_IS_ROMAN_REGEX = compile(
+    r'^(m{0,4})(d?c{0,3}|c[dm])(l?x{0,3}|x[lc])(v?i{0,3}|i[vx])$', IGNORECASE)
 
 
-_from_roman_numbers: Dict[str, int] = {
-    char: num for char, num in zip(_literals, _integers)}
-_to_roman_numbers: Dict[int, str] = {
-    num: char for char, num in zip(_literals, _integers)}
+_FROM_ROMAN_NUMBERS: Dict[str, int] = {
+    char: num for char, num in zip(_LITERALS, _INTEGERS)}
+_TO_ROMAN_NUMBERS: Dict[int, str] = {
+    num: char for char, num in zip(_LITERALS, _INTEGERS)}
+
+
+def is_roman(string: str) -> bool:
+    "Check if given string is valid roman numeral"
+    return _IS_ROMAN_REGEX.search(string) is not None
 
 
 def arabic_to_roman(number: int) -> str:
@@ -27,8 +33,8 @@ def arabic_to_roman(number: int) -> str:
     Returns:
         str: Converted number in lower case
     """
-    if number in _to_roman_numbers:
-        return _to_roman_numbers[number]
+    if number in _TO_ROMAN_NUMBERS:
+        return _TO_ROMAN_NUMBERS[number]
 
     if not (0 < number < 5000):
         raise ValueError('Number must be greater then 0 and less then 5000')
@@ -55,21 +61,21 @@ def process_bit(bit: int) -> str:
     if bit == 0:
         return ''
 
-    if bit in _to_roman_numbers:
-        return _to_roman_numbers[bit]
+    if bit in _TO_ROMAN_NUMBERS:
+        return _TO_ROMAN_NUMBERS[bit]
 
-    number: List[int] = [item for item in _integers if item - bit == 1]
+    number: List[int] = [item for item in _INTEGERS if item - bit == 1]
 
     if len(number) != 0:
-        return f'i{_to_roman_numbers[number[0]]}'
+        return f'i{_TO_ROMAN_NUMBERS[number[0]]}'
 
     result: str = ''
-    for item in _integers:
+    for item in _INTEGERS:
         if bit == 0:
             break
 
         while bit >= item:
-            result += _to_roman_numbers[item]
+            result += _TO_ROMAN_NUMBERS[item]
             bit -= item
 
     return result
@@ -88,9 +94,9 @@ def process_roman_bit(roman_bit: str, position: int) -> str:
     if position == 4:
         return ''.join('m' for _ in range(roman_to_arabic(roman_bit)))
 
-    numbers: List[int] = [_from_roman_numbers[item] for item in roman_bit]
+    numbers: List[int] = [_FROM_ROMAN_NUMBERS[item] for item in roman_bit]
     powered_numbers: List[str] = [
-        _to_roman_numbers[item*(10**(position-1))] for item in numbers]
+        _TO_ROMAN_NUMBERS[item*(10**(position-1))] for item in numbers]
 
     return ''.join(powered_numbers)
 
@@ -111,10 +117,10 @@ def roman_to_arabic(string: str) -> int:
     if string == '':
         raise ValueError('Empty input string')
 
-    if not compile(_regex, IGNORECASE).search(string):
+    if not is_roman(string):
         raise ValueError('Inappropriate values')
 
-    ints: List[int] = [_from_roman_numbers[item] for item in string.lower()]
+    ints: List[int] = [_FROM_ROMAN_NUMBERS[item] for item in string.lower()]
 
     result: int = ints[-1]
 
@@ -124,23 +130,4 @@ def roman_to_arabic(string: str) -> int:
     return result
 
 
-__all__ = [arabic_to_roman, roman_to_arabic, _regex]
-
-
-def to_test(roman: str) -> str:
-    converted_roman: int = roman_to_arabic(roman)
-    converted_arabic: str = arabic_to_roman(converted_roman)
-
-    return converted_arabic
-
-
-if __name__ == '__main__':
-    input_str: str = input('Roman or arabic number: ')
-
-    try:
-        out = roman_to_arabic(input_str) if compile(_regex).search(
-            input_str) else arabic_to_roman(int(input_str))
-    except ValueError as ve:
-        print(ve)
-    else:
-        print(out)
+__all__ = ["arabic_to_roman", "roman_to_arabic", "is_roman"]
